@@ -1,0 +1,80 @@
+#/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --no-first-run --no-default-browser-check --user-data-dir=$(mktemp -d -t 'chrome-remote_data_dir')
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+
+def upload_bot():
+
+    names = ['Samurai']
+
+    for name in names:
+
+        if name == 'Samurai':
+            idx = 203
+        else:
+            idx = 0
+
+        index = []
+
+        for x in range(idx,250):
+
+            chrome_options = Options()
+            chrome_options.add_experimental_option("debuggerAddress", "localhost:9222")
+            chrome_driver = "/Users/gianmariacarnazzi/Desktop/chromedriver"
+            driver = webdriver.Chrome(chrome_driver, chrome_options=chrome_options)
+
+            #driver.implicitly_wait(10)
+
+            add_item = driver.find_element_by_link_text("Add item")
+            add_item.click()
+            #wait = WebDriverWait(driver, 10)
+            driver.implicitly_wait(6)
+            #drag_drop = wait.until(EC.visibility_of_element_located((By.ID, "media")))
+            drag_drop = driver.find_element_by_id("media")
+            drag_drop.send_keys('/Users/gianmariacarnazzi/Desktop/PixelVirus/' + str(name)+ '/#' + str(x) + ".jpeg")
+            #name = wait.until(EC.visibility_of_element_located((By.ID, 'name')))
+            driver.implicitly_wait(7)
+            name_input = driver.find_element_by_id("name")
+            name_input.send_keys(str(name) + "_#" + str(x))
+            create = driver.find_element_by_class_name("AssetForm--action")
+            create.click()
+            time.sleep(8)
+            close = driver.find_element_by_xpath("/html/body/div[6]/div/div/div/div[2]/button")
+            #close = wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[6]/div/div/div/div[2]/button")))
+            close.click()
+            driver.implicitly_wait(6)
+            #sell = wait.until(EC.visibility_of_element_located((By.LINK_TEXT, 'Sell')))
+            sell = driver.find_element_by_link_text("Sell")
+            sell.click()
+            driver.implicitly_wait(3)
+            #price = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[2]/div/div[1]/div/div[3]/div[1]/div[2]/div/div/input')))
+            price = driver.find_element_by_id('price')
+            price.send_keys("0.03")
+            driver.implicitly_wait(3)
+            post_your_listing = driver.find_element_by_xpath('//*[@id="__next"]/div[1]/main/div/div/div[2]/div/div[1]/div/form/div[5]/button')
+            post_your_listing.click()
+            main = driver.window_handles[0]
+            time.sleep(10)
+            metamask_notification = driver.window_handles[1]
+            driver.switch_to_window(metamask_notification)
+            sign = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')
+            sign.click()
+            time.sleep(6)
+            driver.switch_to_window(main)
+            view_item = driver.find_element_by_link_text("View Item")
+            view_item.click()
+            driver.implicitly_wait(5)
+            BitCovs = driver.find_element_by_link_text("BitCovs")
+            BitCovs.click()
+            index.append(x)
+            print(x)
+            time.sleep(6)
+
+    return "Done"
+
+upload_bot()
